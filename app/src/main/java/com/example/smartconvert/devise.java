@@ -3,7 +3,6 @@ package com.example.smartconvert;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,29 +17,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class resultat extends AppCompatActivity {
+public class devise extends AppCompatActivity {
     private EditText val;
-    public TextView textView;
     private  TextView ResultatView;
+    private  TextView TitreView;
     private OptionItem selectedOption;
     private OptionItem selectedOption2;
-Button btn_close;
+    Button btn_close;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resultat);
-
-        // Récupérer la chaîne de texte de l'Intent
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("CLE_TEXTE")) {
-            String texteRecu = intent.getStringExtra("CLE_TEXTE");
-
-            // Afficher la chaîne de texte dans un TextView
-            textView = findViewById(R.id.textView5);
-            textView.setText(texteRecu);
-        }
 
         // Récupérer le Spinner à partir de la mise en page
         Spinner spinner = findViewById(R.id.spinner_from);
@@ -49,14 +38,9 @@ Button btn_close;
         // Créez une liste d'objets OptionItem
         List<OptionItem> optionList = new ArrayList<>();
         optionList.add(new OptionItem("unité ?", 0));
-        optionList.add(new OptionItem("mg", 1));
-        optionList.add(new OptionItem("cg", 10));
-        optionList.add(new OptionItem("dg", 100));
-        optionList.add(new OptionItem("g", 1000));
-        optionList.add(new OptionItem("dag", 10000));
-        optionList.add(new OptionItem("kg", 100000));
-        optionList.add(new OptionItem("q", 1000000));
-        optionList.add(new OptionItem("T", 10000000));
+        optionList.add(new OptionItem("Euro", 1));
+        optionList.add(new OptionItem("Dollar", 2));
+        optionList.add(new OptionItem("CFA", 3.5));
 
 
         // Créez un adaptateur pour les données de la liste déroulante
@@ -99,35 +83,61 @@ Button btn_close;
 
 
         ResultatView = findViewById(R.id.Resultat);
+        TitreView = findViewById(R.id.textView5);
+        TitreView.setText("Conversion de dévise");
         val = findViewById(R.id.valeur);
 
         Button Convert=findViewById(R.id.Convertir);
         Convert.setOnClickListener(new View.OnClickListener() {
-
-
             @Override
-            public void onClick(View view) {String userInput = val.getText().toString();
-            String dep = selectedOption.getLabel();
-            String arv = selectedOption2.getLabel();
+            public void onClick(View view) {
+                String userInput = val.getText().toString();
+                String dep = selectedOption.getLabel();
+                String arv = selectedOption2.getLabel();
 
                 double ValDep =selectedOption.getValue();
                 double ValArv =selectedOption2.getValue();
 
-                double entre = Double.parseDouble(val.getText().toString());
-
-                if (ValDep==0){
-                    Toast.makeText(getApplicationContext(), "Sélectionnez une unité de départ svp.", Toast.LENGTH_SHORT).show();
-                } else if (ValArv==0) {
-                    Toast.makeText(getApplicationContext(), "Sélectionnez une unité de d'arrivé svp.", Toast.LENGTH_SHORT).show();
-                }else if (userInput.isEmpty()){
+                if (userInput.isEmpty()){
                     Toast.makeText(getApplicationContext(), "Saisissez une valeur à convertir svp.", Toast.LENGTH_SHORT).show();
+                }
+                else if (ValDep==0){
+                    Toast.makeText(getApplicationContext(), "Sélectionnez une dévise de départ svp.", Toast.LENGTH_SHORT).show();
+                } else if (ValArv==0) {
+                    Toast.makeText(getApplicationContext(), "Sélectionnez une dévise d'arrivé svp.", Toast.LENGTH_SHORT).show();
                 } else {
-                    double res = ValDep/ValArv * entre;
+                    double entre = Double.parseDouble(val.getText().toString());
+                    double res=0;
+                    double conv =  (ValDep-ValArv);
+                    // Euro=1; Dollar=2; CFA=3.5
+
+                    if(conv == - 2.5){//De Euro à CFA
+                        res = 655.957 * entre;
+                    } else if (conv == 2.5) {//De CFA à Euro
+                        res = entre/655.957;
+
+                    }else if (conv == -1) {//De Euro à Dollar
+                        res = entre * 1.12;
+                    }else if (conv == 1) {//De Dollar à Euro
+                        res = entre / 1.12;
+
+                    }else if (conv == 1.5) {//De CFA à Dollar
+                        res = entre/600.0;
+                    }else if (conv == -1.5) {//De Dollar à CFA
+                        res = 600 * entre;
+                    }
+                    else if (conv == 0) {//De A à A
+                        res = entre ;
+                    }
                     ResultatView.setText(entre+" " + dep +" = "+" "+ res +" "+ arv);
                 }
 
             }
         });
+
+
+
+
 
         btn_close = (Button)findViewById(R.id.button_retour);
         btn_close.setOnClickListener(new View.OnClickListener() {

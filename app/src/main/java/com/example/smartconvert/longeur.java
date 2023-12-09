@@ -3,7 +3,6 @@ package com.example.smartconvert;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.annotation.SuppressLint;
-import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -18,29 +17,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-public class resultat extends AppCompatActivity {
-    private EditText val;
-    public TextView textView;
+public class longeur extends AppCompatActivity {
+    public EditText val;
     private  TextView ResultatView;
+    private  TextView TitreView;
     private OptionItem selectedOption;
     private OptionItem selectedOption2;
-Button btn_close;
+    Button btn_close;
 
     @SuppressLint("MissingInflatedId")
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_resultat);
-
-        // Récupérer la chaîne de texte de l'Intent
-        Intent intent = getIntent();
-        if (intent != null && intent.hasExtra("CLE_TEXTE")) {
-            String texteRecu = intent.getStringExtra("CLE_TEXTE");
-
-            // Afficher la chaîne de texte dans un TextView
-            textView = findViewById(R.id.textView5);
-            textView.setText(texteRecu);
-        }
 
         // Récupérer le Spinner à partir de la mise en page
         Spinner spinner = findViewById(R.id.spinner_from);
@@ -49,14 +38,14 @@ Button btn_close;
         // Créez une liste d'objets OptionItem
         List<OptionItem> optionList = new ArrayList<>();
         optionList.add(new OptionItem("unité ?", 0));
-        optionList.add(new OptionItem("mg", 1));
-        optionList.add(new OptionItem("cg", 10));
-        optionList.add(new OptionItem("dg", 100));
-        optionList.add(new OptionItem("g", 1000));
-        optionList.add(new OptionItem("dag", 10000));
-        optionList.add(new OptionItem("kg", 100000));
-        optionList.add(new OptionItem("q", 1000000));
-        optionList.add(new OptionItem("T", 10000000));
+        optionList.add(new OptionItem("mm", 1));
+        optionList.add(new OptionItem("cm", 10));
+        optionList.add(new OptionItem("dm", 100));
+        optionList.add(new OptionItem("m", 1000));
+        optionList.add(new OptionItem("dam", 10000));
+        optionList.add(new OptionItem("hm", 100000));
+        optionList.add(new OptionItem("km", 1000000));
+
 
 
         // Créez un adaptateur pour les données de la liste déroulante
@@ -93,12 +82,14 @@ Button btn_close;
             @Override
             public void onNothingSelected(AdapterView<?> parentView) {
                 // Code à exécuter si rien n'est sélectionné
-                Toast.makeText(getApplicationContext(), "Aucune unité de d'arrivé n'est sélectionnée", Toast.LENGTH_SHORT).show();
+                Toast.makeText(getApplicationContext(), "Aucune unité  d'arrivé n'est sélectionnée", Toast.LENGTH_SHORT).show();
             }
         });
 
 
         ResultatView = findViewById(R.id.Resultat);
+        TitreView = findViewById(R.id.textView5);
+        TitreView.setText("Conversion de longueur");
         val = findViewById(R.id.valeur);
 
         Button Convert=findViewById(R.id.Convertir);
@@ -106,28 +97,35 @@ Button btn_close;
 
 
             @Override
-            public void onClick(View view) {String userInput = val.getText().toString();
-            String dep = selectedOption.getLabel();
-            String arv = selectedOption2.getLabel();
+            public void onClick(View view) {
+                String userInput = val.getText().toString();
+                String dep = selectedOption.getLabel();
+                String arv = selectedOption2.getLabel();
 
                 double ValDep =selectedOption.getValue();
                 double ValArv =selectedOption2.getValue();
 
-                double entre = Double.parseDouble(val.getText().toString());
-
-                if (ValDep==0){
+                if (userInput.isEmpty()){
+                    Toast.makeText(getApplicationContext(), "Saisissez une valeur à convertir svp.", Toast.LENGTH_SHORT).show();
+                }
+                else if (ValDep==0){
                     Toast.makeText(getApplicationContext(), "Sélectionnez une unité de départ svp.", Toast.LENGTH_SHORT).show();
                 } else if (ValArv==0) {
                     Toast.makeText(getApplicationContext(), "Sélectionnez une unité de d'arrivé svp.", Toast.LENGTH_SHORT).show();
-                }else if (userInput.isEmpty()){
-                    Toast.makeText(getApplicationContext(), "Saisissez une valeur à convertir svp.", Toast.LENGTH_SHORT).show();
+                }else if (Double.parseDouble(val.getText().toString()) ==0){
+                    Toast.makeText(getApplicationContext(), "Saisissez une valeur raisonnable à convertir svp.", Toast.LENGTH_SHORT).show();
                 } else {
+                    double entre = Double.parseDouble(val.getText().toString());
                     double res = ValDep/ValArv * entre;
                     ResultatView.setText(entre+" " + dep +" = "+" "+ res +" "+ arv);
                 }
 
             }
         });
+
+
+
+
 
         btn_close = (Button)findViewById(R.id.button_retour);
         btn_close.setOnClickListener(new View.OnClickListener() {

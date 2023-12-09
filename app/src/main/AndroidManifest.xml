@@ -12,6 +12,21 @@
         android:theme="@style/Theme.SMARTCONVERT"
         tools:targetApi="31">
         <activity
+            android:name=".AProposActivity"
+            android:exported="false" />
+        <activity
+            android:name=".devise"
+            android:exported="false" />
+        <activity
+            android:name=".temperature"
+            android:exported="false" />
+        <activity
+            android:name=".masse"
+            android:exported="false" />
+        <activity
+            android:name=".longeur"
+            android:exported="false" />
+        <activity
             android:name=".deroulant"
             android:exported="false" />
         <activity
